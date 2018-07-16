@@ -25,6 +25,6 @@ public interface HeadlineDao {
     List<Headline> getAllHeadlines();
 
     @Query("SELECT * FROM headline WHERE article_original_id=:article_original_id LIMIT 1")
-    List<Headline> findHeadlineByArticleUid(final String article_original_id);
+    Headline findHeadlineByArticleUid(final String article_original_id);
 
 }

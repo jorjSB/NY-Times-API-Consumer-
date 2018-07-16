@@ -2,16 +2,21 @@ package com.george.balasca.articlesregistry;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 import android.os.AsyncTask;
 
 import com.george.balasca.articlesregistry.data.AppDatabase;
 import com.george.balasca.articlesregistry.data.Article;
 import com.george.balasca.articlesregistry.data.ArticleDao;
+import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
 import com.george.balasca.articlesregistry.data.Headline;
 import com.george.balasca.articlesregistry.data.HeadlineDao;
 import com.george.balasca.articlesregistry.data.Multimedia;
 import com.george.balasca.articlesregistry.data.MultimediaDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppRepository {
@@ -21,6 +26,7 @@ public class AppRepository {
     private HeadlineDao mHeadlineDao;
 
     private LiveData<List<Article>> mAllArticles;
+    private LiveData<PagedList<ArticleWithHeadlineAndMultimedia>> mAllArticlesWithHeadlineAndMultimedia;
 
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -30,12 +36,39 @@ public class AppRepository {
 
 
         mAllArticles = mArticleDao.getAllArticles();
+        init();
     }
 
+    public void init() {
+        PagedList.Config pagedListConfig =
+                (new PagedList.Config.Builder()).setEnablePlaceholders(true)
+                        .setPrefetchDistance(5)
+                        .setPageSize(10).build();
+
+        mAllArticlesWithHeadlineAndMultimedia = (new LivePagedListBuilder(mArticleDao.getArticleWithHeadlineAndMultimediaList(), pagedListConfig))
+                .build();
+
+    }
+
+    // live Articles
     public LiveData<List<Article>> getAllArticles() {
         return mAllArticles;
     }
 
+    // live Articles
+    public LiveData<PagedList<ArticleWithHeadlineAndMultimedia>> getArticleWithHeadlineAndMultimediaList() {
+        return mAllArticlesWithHeadlineAndMultimedia;
+    }
+
+    // get Headline for Article
+    public Headline getHeadlineForArticle(String original_id) {
+        return  mHeadlineDao.findHeadlineByArticleUid(original_id);
+    }
+
+    // get Multimedia for Article
+    public ArrayList<Multimedia> getMultimediaForArticle(String original_id) {
+        return new ArrayList<Multimedia>( mMultimediaDao.findMultimediaByArticleUid(original_id) );
+    }
 
     // insertArticle Article
     public void insertArticle(Article article) {

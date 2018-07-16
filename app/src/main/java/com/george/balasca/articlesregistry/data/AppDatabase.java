@@ -57,22 +57,22 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params) {
 
-            Log.d(TAG, "reached");
-
-//            mDao.deleteAllArticlesExceptFavourites();
-            mDao.deleteAll();
-
-            Article article = new Article();
-            article.setSource("Hello");
-            article.setOriginal_id("ttttt");
-            article.setFavourite(false);
-            mDao.insert(article);
-
-            article = new Article();
-            article.setSource("World");
-            article.setOriginal_id("qqqq");
-            article.setFavourite(true);
-            mDao.insert(article);
+//            Log.d(TAG, "reached");
+//
+////            mDao.deleteAllArticlesExceptFavourites();
+//            mDao.deleteAll();
+//
+//            Article article = new Article();
+//            article.setSource("Hello");
+//            article.setOriginal_id("ttttt");
+//            article.setFavourite(false);
+//            mDao.insert(article);
+//
+//            article = new Article();
+//            article.setSource("World");
+//            article.setOriginal_id("qqqq");
+//            article.setFavourite(true);
+//            mDao.insert(article);
 
             return null;
         }

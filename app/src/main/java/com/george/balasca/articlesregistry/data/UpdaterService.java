@@ -67,6 +67,7 @@ public class UpdaterService extends IntentService{
 
         // Gson: map articles json to articles list array
         Article[] articleArrayList = new Gson().fromJson(articleList, Article[].class);
+        // Insert the Artricles into the DB (because thatțs the only field wețre listening with LiveData)
         for (Article article : articleArrayList){
             mAppRepository.insertArticle(article);
         }
@@ -79,6 +80,7 @@ public class UpdaterService extends IntentService{
 
             // store Multimedia into DB
             Multimedia[] mmdArray = new Gson().fromJson(multimediaJsonArray, Multimedia[].class);
+            // insert article's MMD into DB
             for (Multimedia mmd: mmdArray){
                 // set FK (article's _id)
                 mmd.setArticle_original_id(articleArrayList[i].getOriginal_id());
@@ -90,6 +92,7 @@ public class UpdaterService extends IntentService{
             // store Multimedia into DB
             Headline headlineObject = new Gson().fromJson(headlineJsonObject, Headline.class);
             headlineObject.setArticle_original_id(articleArrayList[i].getOriginal_id());
+            // insert article's Headline into DB
             mAppRepository.insertHeadline(headlineObject);
         }
     }

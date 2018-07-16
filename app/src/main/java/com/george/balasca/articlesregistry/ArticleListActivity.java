@@ -2,6 +2,7 @@ package com.george.balasca.articlesregistry;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.george.balasca.articlesregistry.data.Article;
+import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
 import com.george.balasca.articlesregistry.data.UpdaterService;
 import com.george.balasca.articlesregistry.ui.ArticleListAdapter;
 import com.george.balasca.articlesregistry.viewmodel.ArticleViewModel;
@@ -110,87 +111,18 @@ public class ArticleListActivity extends AppCompatActivity {
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
-        final ArticleListAdapter adapter = new ArticleListAdapter(this);
+        final ArticleListAdapter adapter = new ArticleListAdapter();
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mArticleViewModel = ViewModelProviders.of(this).get(ArticleViewModel.class);
-        mArticleViewModel.getAllArticles().observe(this, new Observer<List<Article>>() {
+        mArticleViewModel.getArticleWithHeadlineAndMultimediaList().observe(this, new Observer<PagedList<ArticleWithHeadlineAndMultimedia>>() {
             @Override
-            public void onChanged(@Nullable final List<Article> articles) {
-                // Update the cached copy of the words in the adapter.
-                adapter.setArticles(articles);
+            public void onChanged(@Nullable PagedList<ArticleWithHeadlineAndMultimedia> articleWithHeadlineAndMultimedia) {
+                adapter.setArticles(articleWithHeadlineAndMultimedia);
             }
         });
     }
-
-//    public static class SimpleItemRecyclerViewAdapter
-//            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
-//
-//        private final ArticleListActivity mParentActivity;
-//        private final List<DummyContent.DummyItem> mValues;
-//        private final boolean mTwoPane;
-//        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                DummyContent.DummyItem item = (DummyContent.DummyItem) view.getTag();
-//                if (mTwoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putString(ArticleDetailFragment.ARG_ITEM_ID, item.id);
-//                    ArticleDetailFragment fragment = new ArticleDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    mParentActivity.getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.article_detail_container, fragment)
-//                            .commit();
-//                } else {
-//                    Context context = view.getContext();
-//                    Intent intent = new Intent(context, ArticleDetailActivity.class);
-//                    intent.putExtra(ArticleDetailFragment.ARG_ITEM_ID, item.id);
-//
-//                    context.startActivity(intent);
-//                }
-//            }
-//        };
-
-//        SimpleItemRecyclerViewAdapter(ArticleListActivity parent,
-//                                      List<DummyContent.DummyItem> items,
-//                                      boolean twoPane) {
-//            mValues = items;
-//            mParentActivity = parent;
-//            mTwoPane = twoPane;
-//        }
-
-//        @Override
-//        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//            View view = LayoutInflater.from(parent.getContext())
-//                    .inflate(R.layout.article_list_content, parent, false);
-//            return new ViewHolder(view);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(final ViewHolder holder, int position) {
-//            holder.mIdView.setText(mValues.get(position).id);
-//            holder.mContentView.setText(mValues.get(position).content);
-//
-//            holder.itemView.setTag(mValues.get(position));
-//            holder.itemView.setOnClickListener(mOnClickListener);
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return mValues.size();
-//        }
-//
-//        class ViewHolder extends RecyclerView.ViewHolder {
-//            final TextView mIdView;
-//            final TextView mContentView;
-//
-//            ViewHolder(View view) {
-//                super(view);
-//                mIdView = (TextView) view.findViewById(R.id.id_text);
-//                mContentView = (TextView) view.findViewById(R.id.content);
-//            }
-//        }
-//    }
 
 }

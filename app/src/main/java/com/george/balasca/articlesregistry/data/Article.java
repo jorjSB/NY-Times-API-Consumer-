@@ -15,7 +15,7 @@ import java.util.ArrayList;
 @Entity(tableName = "article",
         indices={
                 @Index(value="uid"),
-                @Index(value="original_id")
+                @Index(value="original_id", unique = true)
         })
 public class Article {
 
@@ -23,7 +23,7 @@ public class Article {
     ArrayList<Multimedia> multimediaArrayList;
 
     @Ignore
-    ArrayList<Headline> headlineArrayList;
+    Headline headline;
 
     @Expose(deserialize = false)
     @NonNull
@@ -133,11 +133,11 @@ public class Article {
         this.multimediaArrayList = multimediaArrayList;
     }
 
-    public ArrayList<Headline> getHeadlineArrayList() {
-        return headlineArrayList;
+    public Headline getHeadline() {
+        return headline;
     }
 
-    public void setHeadlineArrayList(ArrayList<Headline> headlineArrayList) {
-        this.headlineArrayList = headlineArrayList;
+    public void setHeadline(Headline headline) {
+        this.headline = headline;
     }
 }
