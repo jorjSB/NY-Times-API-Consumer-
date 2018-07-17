@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -44,7 +45,7 @@ public class UpdaterService extends IntentService{
 
         // get response from API
         NetUtils netUtils = new NetUtils();
-        String response = netUtils.fetchJsonArray();
+        String response = netUtils.fetchJsonArray(intent.getIntExtra("page", 0));
 
         // if response: store into DB
         if(response != null)
@@ -57,6 +58,9 @@ public class UpdaterService extends IntentService{
     }
 
     private void storeNewDataIntoDB(String data) {
+
+        Log.d(TAG, data);
+
         // DB
         AppRepository mAppRepository = new AppRepository(getApplication());
 

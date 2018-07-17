@@ -11,6 +11,7 @@ import com.george.balasca.articlesregistry.data.AppDatabase;
 import com.george.balasca.articlesregistry.data.Article;
 import com.george.balasca.articlesregistry.data.ArticleDao;
 import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
+import com.george.balasca.articlesregistry.data.ArticlesBoundaryCallback;
 import com.george.balasca.articlesregistry.data.Headline;
 import com.george.balasca.articlesregistry.data.HeadlineDao;
 import com.george.balasca.articlesregistry.data.Multimedia;
@@ -40,12 +41,19 @@ public class AppRepository {
     }
 
     public void init() {
+
+        ArticlesBoundaryCallback boundaryCallback = new ArticlesBoundaryCallback();
+        
         PagedList.Config pagedListConfig =
-                (new PagedList.Config.Builder()).setEnablePlaceholders(true)
+                (new PagedList.Config.Builder())
+                        .setEnablePlaceholders(false)
                         .setPrefetchDistance(5)
-                        .setPageSize(10).build();
+                        .setPageSize(10)
+                        .setInitialLoadSizeHint(10)
+                        .build();
 
         mAllArticlesWithHeadlineAndMultimedia = (new LivePagedListBuilder(mArticleDao.getArticleWithHeadlineAndMultimediaList(), pagedListConfig))
+                .setBoundaryCallback(boundaryCallback)
                 .build();
 
     }

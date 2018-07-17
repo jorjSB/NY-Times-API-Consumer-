@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,7 @@ import android.view.View;
 import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
 import com.george.balasca.articlesregistry.data.UpdaterService;
 import com.george.balasca.articlesregistry.ui.ArticleListAdapter;
+import com.george.balasca.articlesregistry.utils.NetUtils;
 import com.george.balasca.articlesregistry.viewmodel.ArticleViewModel;
 
 import java.util.List;
@@ -77,7 +79,14 @@ public class ArticleListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
 
 
-        fetchData();
+        fetchData(0);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fetchData(2);
+            }
+        }, 7000);
     }
 
     @Override
@@ -105,24 +114,27 @@ public class ArticleListActivity extends AppCompatActivity {
         }
     };
 
-    private void fetchData() {
-        startService(new Intent(this, UpdaterService.class));
+    private void fetchData(int page) {
+        Intent i = new Intent(this, UpdaterService.class);
+        i.putExtra("page", page);
+        startService(i);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, DummyContent.ITEMS, mTwoPane));
         final ArticleListAdapter adapter = new ArticleListAdapter();
-
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mArticleViewModel = ViewModelProviders.of(this).get(ArticleViewModel.class);
+
         mArticleViewModel.getArticleWithHeadlineAndMultimediaList().observe(this, new Observer<PagedList<ArticleWithHeadlineAndMultimedia>>() {
             @Override
             public void onChanged(@Nullable PagedList<ArticleWithHeadlineAndMultimedia> articleWithHeadlineAndMultimedia) {
-                adapter.setArticles(articleWithHeadlineAndMultimedia);
+                adapter.submitList(articleWithHeadlineAndMultimedia);
             }
         });
+
+        recyclerView.setAdapter(adapter);
     }
 
 }
