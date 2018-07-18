@@ -31,7 +31,7 @@
                 android:value="com.george.balasca.articlesregistry.ArticleListActivity" />
         </activity>
 
-        <service android:name=".data.UpdaterService"
+        <service android:name=".api.UpdaterService"
             android:exported="false" />
     </application>
 

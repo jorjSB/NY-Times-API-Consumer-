@@ -2,25 +2,27 @@ package com.george.balasca.articlesregistry;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.george.balasca.articlesregistry.data.AppDatabase;
-import com.george.balasca.articlesregistry.data.Article;
+import com.george.balasca.articlesregistry.db.AppDatabase;
+import com.george.balasca.articlesregistry.entities.Article;
 import com.george.balasca.articlesregistry.data.ArticleDao;
 import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
 import com.george.balasca.articlesregistry.data.ArticlesBoundaryCallback;
-import com.george.balasca.articlesregistry.data.Headline;
+import com.george.balasca.articlesregistry.entities.Headline;
 import com.george.balasca.articlesregistry.data.HeadlineDao;
-import com.george.balasca.articlesregistry.data.Multimedia;
+import com.george.balasca.articlesregistry.entities.Multimedia;
 import com.george.balasca.articlesregistry.data.MultimediaDao;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppRepository {
+
+    private static final String TAG = AppRepository.class.getSimpleName();
 
     private ArticleDao mArticleDao;
     private MultimediaDao mMultimediaDao;
@@ -35,32 +37,18 @@ public class AppRepository {
         mMultimediaDao = db.getMultimediaDao();
         mHeadlineDao = db.getHeadlineDao();
 
-
         mAllArticles = mArticleDao.getAllArticles();
-        init();
-    }
-
-    public void init() {
-
-        ArticlesBoundaryCallback boundaryCallback = new ArticlesBoundaryCallback();
-        
-        PagedList.Config pagedListConfig =
-                (new PagedList.Config.Builder())
-                        .setEnablePlaceholders(false)
-                        .setPrefetchDistance(5)
-                        .setPageSize(10)
-                        .setInitialLoadSizeHint(10)
-                        .build();
-
-        mAllArticlesWithHeadlineAndMultimedia = (new LivePagedListBuilder(mArticleDao.getArticleWithHeadlineAndMultimediaList(), pagedListConfig))
-                .setBoundaryCallback(boundaryCallback)
-                .build();
 
     }
 
     // live Articles
     public LiveData<List<Article>> getAllArticles() {
         return mAllArticles;
+    }
+
+    // live Articles
+    public void deleteAllArticles() {
+        new deleteAllArticlesAsyncTask(mArticleDao).execute();
     }
 
     // live Articles
@@ -78,9 +66,10 @@ public class AppRepository {
         return new ArrayList<Multimedia>( mMultimediaDao.findMultimediaByArticleUid(original_id) );
     }
 
+    Long insertedArticleId;
     // insertArticle Article
-    public void insertArticle(Article article) {
-        new insertAsyncTaskArticle(mArticleDao).execute(article);
+    public AsyncTask<Article, Void, Void> insertArticle(Article article) {
+        return new insertAsyncTaskArticle(mArticleDao).execute(article);
     }
 
     // insert Multimedia
@@ -106,6 +95,8 @@ public class AppRepository {
             mAsyncTaskDao.insert(params[0]);
             return null;
         }
+
+
     }
 
     // Insert into the DB AsyncTask
@@ -133,9 +124,29 @@ public class AppRepository {
 
         @Override
         protected Void doInBackground(final Headline... params) {
-            mAsyncTaskDao.insert(params[0]);
+            if(params.length > 0)
+                mAsyncTaskDao.insert(params[0]);
             return null;
         }
     }
 
+
+    // Insert into the DB AsyncTask
+    private static class deleteAllArticlesAsyncTask extends AsyncTask<Article, Void, Void> {
+        private ArticleDao mAsyncTaskDao;
+
+        deleteAllArticlesAsyncTask(ArticleDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(final Article... params) {
+            mAsyncTaskDao.deleteAll();
+            return null;
+        }
+    }
+
+    public ArticleDao getmArticleDao() {
+        return mArticleDao;
+    }
 }

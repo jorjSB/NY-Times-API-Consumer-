@@ -1,4 +1,4 @@
-package com.george.balasca.articlesregistry.utils;
+package com.george.balasca.articlesregistry.api;
 
 import android.util.Log;
 
@@ -15,7 +15,7 @@ public class NetUtils {
 
     public static final String TAG = NetUtils.class.getSimpleName();
     public final static String BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-    private int mPage = 0;
+    private int mPage = 1;
 
     public void NetUtils(){
     }

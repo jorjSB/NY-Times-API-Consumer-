@@ -22,7 +22,7 @@ public class ArticlesBoundaryCallback extends PagedList.BoundaryCallback<Article
     public void onItemAtEndLoaded(ArticleWithHeadlineAndMultimedia article){
         // fetch data from service
 //        requestAndSaveData(query);
-        Log.d(TAG , "onItemAtEndLoaded" + article.headline.get(0).getHeadline_main());
+        Log.d(TAG , "onItemAtEndLoaded " + article.headline.get(0).getHeadline_main());
     }
 
 

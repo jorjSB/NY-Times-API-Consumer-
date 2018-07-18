@@ -1,4 +1,4 @@
-package com.george.balasca.articlesregistry.data;
+package com.george.balasca.articlesregistry.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
@@ -7,6 +7,7 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.george.balasca.articlesregistry.entities.Article;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -14,7 +15,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "headline",
         foreignKeys = @ForeignKey(entity = Article.class,
-                parentColumns = "original_id",
+                parentColumns = "_id",
                 childColumns = "article_original_id",
                 onDelete = CASCADE),
         indices = {@Index("article_original_id")})

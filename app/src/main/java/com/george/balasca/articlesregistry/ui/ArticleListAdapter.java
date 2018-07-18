@@ -1,9 +1,8 @@
 package com.george.balasca.articlesregistry.ui;
 
-import android.arch.paging.PagedList;
 import android.arch.paging.PagedListAdapter;
-import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.george.balasca.articlesregistry.R;
-import com.george.balasca.articlesregistry.data.Article;
 import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
-
-import java.util.List;
 
 public class ArticleListAdapter extends PagedListAdapter< ArticleWithHeadlineAndMultimedia , ArticleListAdapter.ArticleViewHolder> {
 
 
     public ArticleListAdapter() {
-        super(ArticleWithHeadlineAndMultimedia.DIFF_CALLBACK);
+        super(DIFF_CALLBACK);
     }
 
 
@@ -52,4 +48,16 @@ public class ArticleListAdapter extends PagedListAdapter< ArticleWithHeadlineAnd
         }
     }
 
+
+    public static DiffUtil.ItemCallback<ArticleWithHeadlineAndMultimedia> DIFF_CALLBACK = new DiffUtil.ItemCallback<ArticleWithHeadlineAndMultimedia>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull ArticleWithHeadlineAndMultimedia oldItem, @NonNull ArticleWithHeadlineAndMultimedia newItem) {
+            return oldItem.article.getUid() == newItem.article.getUid();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ArticleWithHeadlineAndMultimedia oldItem, @NonNull ArticleWithHeadlineAndMultimedia newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 }

@@ -29,6 +29,7 @@ dependencies {
     def picasso_version = "2.71828"
     def butterknife_version = "8.8.1"
     def ads_version = "15.0.1"
+    def retrofit_version = "2.4.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -59,6 +60,11 @@ dependencies {
     // butterknife
     implementation "com.jakewharton:butterknife:$butterknife_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+
+
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 
 //    testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'com.android.support.test:runner:1.0.2'

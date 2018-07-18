@@ -1,15 +1,16 @@
-package com.george.balasca.articlesregistry.data;
+package com.george.balasca.articlesregistry.api;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.george.balasca.articlesregistry.AppRepository;
-import com.george.balasca.articlesregistry.utils.NetUtils;
+import com.george.balasca.articlesregistry.entities.Article;
+import com.george.balasca.articlesregistry.entities.Headline;
+import com.george.balasca.articlesregistry.entities.Multimedia;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -66,18 +67,22 @@ public class UpdaterService extends IntentService{
 
         // get articles
         JsonObject jsonObject = new JsonParser().parse(data).getAsJsonObject();
-        JsonArray articleList = jsonObject.getAsJsonObject("response").getAsJsonArray("docs");
+        JsonArray articleList = new JsonArray();
+        if(jsonObject != null)
+            articleList = jsonObject.getAsJsonObject("response").getAsJsonArray("docs");
 
+        // parse each article from JsonArray into POJO's
+        for (int i=0; i< articleList.size(); i++) {
+            // Gson: map articles json to articles list array
+            Article article = new Gson().fromJson(articleList.get(i), Article.class);
 
-        // Gson: map articles json to articles list array
-        Article[] articleArrayList = new Gson().fromJson(articleList, Article[].class);
-        // Insert the Artricles into the DB (because thatțs the only field wețre listening with LiveData)
-        for (Article article : articleArrayList){
+            if(article == null){
+                Log.e(TAG, "ARTICLE IS NULL!?!");
+                break;
+            }
+
+            // insert the Article into the DB
             mAppRepository.insertArticle(article);
-        }
-
-        // parse Articles to ghet multimedia and headlines
-        for (int i=0; i < articleList.size(); i++) {
 
             /* ****************** Multimedia ****************** */// get multimedia json array
             JsonArray multimediaJsonArray =  articleList.get(i).getAsJsonObject().getAsJsonArray("multimedia");
@@ -87,7 +92,7 @@ public class UpdaterService extends IntentService{
             // insert article's MMD into DB
             for (Multimedia mmd: mmdArray){
                 // set FK (article's _id)
-                mmd.setArticle_original_id(articleArrayList[i].getOriginal_id());
+                mmd.setArticle_original_id(article.getUid());
                 mAppRepository.insertMultimedia(mmd);
             }
 
@@ -95,9 +100,10 @@ public class UpdaterService extends IntentService{
             JsonObject headlineJsonObject =  articleList.get(i).getAsJsonObject().getAsJsonObject("headline");
             // store Multimedia into DB
             Headline headlineObject = new Gson().fromJson(headlineJsonObject, Headline.class);
-            headlineObject.setArticle_original_id(articleArrayList[i].getOriginal_id());
+            headlineObject.setArticle_original_id(article.getUid());
             // insert article's Headline into DB
             mAppRepository.insertHeadline(headlineObject);
+
         }
     }
 }

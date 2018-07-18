@@ -7,17 +7,21 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
-import android.arch.persistence.room.Update;
+
+import com.george.balasca.articlesregistry.entities.Article;
 
 import java.util.List;
 
+import static android.arch.persistence.room.OnConflictStrategy.ABORT;
+import static android.arch.persistence.room.OnConflictStrategy.IGNORE;
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+import static android.arch.persistence.room.OnConflictStrategy.ROLLBACK;
 
 @Dao
 public interface ArticleDao {
 
     @Insert(onConflict = REPLACE)
-    void insert(Article article);
+    long insert(Article article);
 
     @Insert(onConflict = REPLACE)
     void update(Article... repos);
@@ -34,7 +38,7 @@ public interface ArticleDao {
     @Query("SELECT * FROM article ORDER BY pub_date ASC")
     LiveData<List<Article>> getAllArticles();
 
-    @Query("SELECT * FROM article WHERE uid=:uid ORDER BY pub_date ASC")
+    @Query("SELECT * FROM article WHERE _id=:uid ORDER BY pub_date ASC")
     List<Article> findArticlesById(final String uid);
 
     @Query("DELETE FROM article WHERE favourite != 1")

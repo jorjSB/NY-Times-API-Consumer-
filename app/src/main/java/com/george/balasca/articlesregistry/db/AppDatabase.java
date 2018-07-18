@@ -1,4 +1,4 @@
-package com.george.balasca.articlesregistry.data;
+package com.george.balasca.articlesregistry.db;
 
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
@@ -9,6 +9,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.george.balasca.articlesregistry.entities.Article;
+import com.george.balasca.articlesregistry.data.ArticleDao;
+import com.george.balasca.articlesregistry.entities.Headline;
+import com.george.balasca.articlesregistry.data.HeadlineDao;
+import com.george.balasca.articlesregistry.entities.Multimedia;
+import com.george.balasca.articlesregistry.data.MultimediaDao;
 
 @Database(entities = {Article.class, Multimedia.class, Headline.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
@@ -58,21 +65,9 @@ public abstract class AppDatabase extends RoomDatabase {
         protected Void doInBackground(final Void... params) {
 
 //            Log.d(TAG, "reached");
-//
-////            mDao.deleteAllArticlesExceptFavourites();
+
+//            mDao.deleteAllArticlesExceptFavourites();
 //            mDao.deleteAll();
-//
-//            Article article = new Article();
-//            article.setSource("Hello");
-//            article.setOriginal_id("ttttt");
-//            article.setFavourite(false);
-//            mDao.insert(article);
-//
-//            article = new Article();
-//            article.setSource("World");
-//            article.setOriginal_id("qqqq");
-//            article.setFavourite(true);
-//            mDao.insert(article);
 
             return null;
         }

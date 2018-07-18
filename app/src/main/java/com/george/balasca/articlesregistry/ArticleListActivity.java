@@ -21,12 +21,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.george.balasca.articlesregistry.data.ArticleWithHeadlineAndMultimedia;
-import com.george.balasca.articlesregistry.data.UpdaterService;
+import com.george.balasca.articlesregistry.api.UpdaterService;
 import com.george.balasca.articlesregistry.ui.ArticleListAdapter;
-import com.george.balasca.articlesregistry.utils.NetUtils;
 import com.george.balasca.articlesregistry.viewmodel.ArticleViewModel;
-
-import java.util.List;
 
 /**
  * An activity representing a list of Articles. This activity
@@ -63,6 +60,8 @@ public class ArticleListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                fetchData(1);
+
             }
         });
 
@@ -79,14 +78,21 @@ public class ArticleListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
 
 
-        fetchData(0);
+//        fetchData(0);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fetchData(2);
+                fetchData(0);
             }
-        }, 7000);
+        }, 4000);
+
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                fetchData(1);
+//            }
+//        }, 8000);
     }
 
     @Override
@@ -127,9 +133,16 @@ public class ArticleListActivity extends AppCompatActivity {
 
         mArticleViewModel = ViewModelProviders.of(this).get(ArticleViewModel.class);
 
+        mArticleViewModel.deleteAllArticles();
+
         mArticleViewModel.getArticleWithHeadlineAndMultimediaList().observe(this, new Observer<PagedList<ArticleWithHeadlineAndMultimedia>>() {
             @Override
             public void onChanged(@Nullable PagedList<ArticleWithHeadlineAndMultimedia> articleWithHeadlineAndMultimedia) {
+                for (ArticleWithHeadlineAndMultimedia art :  articleWithHeadlineAndMultimedia) {
+                    if(art != null && art.headline != null){
+                        // Log.d(TAG, "\n" + ">>>>>>>>>>>>>>>>>>>>>>>>" + art.headline.get(0).getHeadline_main() + "\n");
+                         }
+                    }
                 adapter.submitList(articleWithHeadlineAndMultimedia);
             }
         });

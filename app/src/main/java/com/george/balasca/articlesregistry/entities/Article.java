@@ -1,4 +1,4 @@
-package com.george.balasca.articlesregistry.data;
+package com.george.balasca.articlesregistry.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 @Entity(tableName = "article",
         indices={
-                @Index(value="uid"),
-                @Index(value="original_id", unique = true)
+                @Index(value="_id"),
+//                @Index(value="original_id", unique = true)
         })
 public class Article {
 
@@ -25,10 +25,16 @@ public class Article {
     @Ignore
     Headline headline;
 
-    @Expose(deserialize = false)
+//    @Expose(deserialize = false)
+//    @NonNull
+//    @PrimaryKey(autoGenerate = true)
+//    private int uid;
+
     @NonNull
-    @PrimaryKey(autoGenerate = true)
-    private int uid;
+    @ColumnInfo(name = "_id")
+    @SerializedName("_id")
+    @PrimaryKey()
+    private String uid;
 
     @Expose(deserialize = false)
     @ColumnInfo(name = "favourite")
@@ -55,16 +61,12 @@ public class Article {
     @ColumnInfo(name = "document_type")
     private String document_type;
 
-    @SerializedName("_id")
     @NonNull
-    @ColumnInfo(name = "original_id")
-    private String original_id;
-
-    public int getUid() {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid(int uid) {
+    public void setUid(@NonNull String uid) {
         this.uid = uid;
     }
 
@@ -114,15 +116,6 @@ public class Article {
 
     public void setFavourite(Boolean favourite) {
         this.favourite = favourite;
-    }
-
-    @NonNull
-    public String getOriginal_id() {
-        return original_id;
-    }
-
-    public void setOriginal_id(@NonNull String original_id) {
-        this.original_id = original_id;
     }
 
     public ArrayList<Multimedia> getMultimediaArrayList() {
